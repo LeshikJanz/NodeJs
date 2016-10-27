@@ -58,8 +58,13 @@ server.get('/session', function(req, res, next){
     res.send("" + req.session.numberOfVisits);
 });
 
+server.get('/xmlHttp', function(req, res, next){
+    console.log(req.query);
+    res.send("Получено");
+});
+
 server.get('/Test', function(req, res, next){
-    res.render("index", {
+    res.render("test", {
         mes: "<b>Hi, my little friend</b>"
     })
 });

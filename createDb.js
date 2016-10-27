@@ -17,10 +17,6 @@ user.save(function(err, user, affected){
     if(err) throw err;
 })
 
-
-
-
-
 //var mongoose = require('mongoose');
 //mongoose.connect('mongodb://localhost/myDb');
 //

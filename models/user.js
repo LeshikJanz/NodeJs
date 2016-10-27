@@ -5,6 +5,10 @@ mongoose.Promise = global.Promise;
 var schema = mongoose.Schema({
     userName: {
         type: String
+    },
+    userLastName: {
+        type: String,
+        require: true
     }
 });
 

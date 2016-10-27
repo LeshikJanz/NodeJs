@@ -24,16 +24,71 @@ server.use(bodyParser.json()); //парсит json, form и после все с
 
 server.use(cookieParser()); //разбирает req.headers и делает req.cookies
 
-server.use('/', routes);  //позволяет просто обрабатывать get, post .. запросы. Пример ниже
+var mongoose = require('libs/mongoose');
 
-//server.get('/Test', function(req, res, next){
-//    res.end("My Test");
-//});
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+
+/* Работает с сессиями. Создает уникальный идентификатор для сессии, по кот будут восстановлены данные
+*  этой сессии.
+* */
+server.use(session({
+    secret: config.get("session:secret"),        //исп. для создания цифровой подписи.не передается посетителю
+    name: config.get("session:key"),
+    cookie: config.get("session:cookie"),
+    saveUninitialized: false,
+    resave: false,
+    store: new MongoStore({mongooseConnection: mongoose.connection})
+})
+);
+
+server.get('/', function(req, res, next){
+    res.render("index", {
+        mes: "<h1>Good evening</h1>"
+    });
+});
+
+
+/*
+* Страница считает сколько раз была просмотрена тек. пользователем
+ * и записывает данные в сессиию
+*/
+server.get('/session', function(req, res, next){
+    req.session.numberOfVisits = req.session.numberOfVisits + 1 || 1;
+    res.send("" + req.session.numberOfVisits);
+});
 
 server.get('/Test', function(req, res, next){
     res.render("index", {
         mes: "<b>Hi, my little friend</b>"
     })
+});
+
+var User = require("models/user").User;
+server.get('/users', function(req, res, next){
+    User.find({}, function(err, users){
+        if(err) next(err);
+        res.json(users);
+    })
+});
+
+
+server.get('/remove', function(req, res, next){
+    User.remove({}, function(err, req, res){
+        if(err) throw err;
+    });
+    res.end("Удалено");
+});
+
+server.get('/add', function(req, res, next){
+    var user = new User();
+    console.log(req.query.name);
+    user.userName = "Lesha";
+    user.userLastName = "Teresh";
+    user.save(function(err, user, affected){
+        if(err) next(err);
+    });
+    res.end("Добавлено");
 });
 
 /*
@@ -56,50 +111,5 @@ server.use(function(err, req, res, next){
 server.use(function(req, res, next){ //замыкающий обработчик
     res.status(404).send("Page not found");
 });
-//
-//
 
-//
-//
-//
-//// view engine setup
-
-//
-//// uncomment after placing your favicon in /public
-
-//
-
-//
-//// catch 404 and forward to error handler
-//server.use(function(req, res, next) {
-//  var err = new Error('Not Found');
-//  err.status = 404;
-//  next(err);
-//});
-//
-//// error handlers
-//
-//// development error handler
-//// will print stacktrace
-//if (server.get('env') === 'development') {
-//  server.use(function(err, req, res, next) {
-//    res.status(err.status || 500);
-//    res.render('error', {
-//      message: err.message,
-//      error: err
-//    });
-//  });
-//}
-//
-//// production error handler
-//// no stacktraces leaked to user
-//server.use(function(err, req, res, next) {
-//  res.status(err.status || 500);
-//  res.render('error', {
-//    message: err.message,
-//    error: {}
-//  });
-//});
-//
-//
-//module.exports = server;
+module.exports = server;

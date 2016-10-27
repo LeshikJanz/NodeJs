@@ -64,7 +64,7 @@ app.get('/Test', function(req, res, next){
     })
 });
 
-var User = require("models/user").User;
+var User = require("./models/user").User;
 app.get('/users', function(req, res, next){
     User.find({}, function(err, users){
         if(err) next(err);
@@ -83,8 +83,8 @@ app.get('/remove', function(req, res, next){
 app.get('/add', function(req, res, next){
     var user = new User();
     console.log(req.query.name);
-    user.userName = "Lesha";
-    user.userLastName = "Teresh";
+    user.userName = "Alex";
+    user.userPassword = "123";
     user.save(function(err, user, affected){
         if(err) next(err);
     });

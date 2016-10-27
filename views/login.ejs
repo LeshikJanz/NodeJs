@@ -1,0 +1,30 @@
+<% layout("layout/page") %>
+<% block('title', 'login' ) %>
+<br><br>
+<form id="login-form" action="">
+<text>Логин</text><br>
+<input id="userName" type="text"><br><br>
+<text>Пароль</text><br>
+<input id="userPassword" type="password"><br>
+<br>
+<input id="sendButton" value="Отправить" type="submit"/>
+</form>
+<script>
+    $('document').ready(function(){
+        $('#login-form').submit(function( event ){
+            var data = {
+                userName: $('#userName').val(),
+                userPassword: $('#userPassword').val()
+            }
+            $.ajax({
+                url: "/login",
+                method: "POST",
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                complete: alert("Success")
+            })
+        });
+    })
+
+
+</script>

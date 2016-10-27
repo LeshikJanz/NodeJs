@@ -1,9 +1,13 @@
-var express = require('express');
-var router = express.Router();
+/*
+* Описание всех routes(путей). Как можно добраться до обработчиков из браузера.
+ * Каждый обработчик должен реализовать функцию get, а в ней отдать обработанную ejs страницу.
+* */
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+module.exports = function(app){
+  app.get('/', require("./frontpage").get);
 
-module.exports = router;
+  app.get('/login', require("./login").get);
+  app.post('/login', require("./login").post);
+
+  app.get('/chat', require("./chat").get);
+}

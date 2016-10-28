@@ -22,12 +22,12 @@
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 statusCode: {
-                    200: function(){
+                    200: function(data){
                         alert("Успешная авторизация");
                         window.location.href = '/chat';
                         console.log("Перешли обратно на страницу");
                     },
-                    403: function(){
+                    403: function(data, textStatus, jqXHR){
                         alert("Ошибка авторизации");
                     }
                 }

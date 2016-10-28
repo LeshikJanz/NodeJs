@@ -1,5 +1,6 @@
 var User = require('../models/user').User;
 var async = require('async');
+var util = require('util');
 
 exports.get = function(req, res){
     res.render("login", { title: "Login" })
@@ -16,6 +17,8 @@ exports.post = function(req, res){
             console.log("user: " + user);
             if(user.userPassword == req.body.userPassword){
                 console.log("Успешная авторизация!");
+                console.log(req.session);
+                req.session.user = user._id;
                 res.status(200).send("Успешная авторизация");
             }else {
                 console.log("Пароль неверен!");
@@ -30,3 +33,15 @@ exports.post = function(req, res){
         }
     })
 };
+
+function AuthError(message){
+    Error.apply(this, arguments);
+
+    this.message = message;
+}
+
+util.inherits(AuthError, Error);
+
+AuthError.prototype.name = "AuthError";
+
+exports.AuthError = AuthError;

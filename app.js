@@ -23,12 +23,12 @@ app.use(logger('dev')); //еще один логер
 
 app.use(cookieParser()); //разбирает req.headers и делает req.cookies
 
-var routes = require('./routes/index')(app);
+
 
 var mongoose = require('libs/mongoose');
 
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 /* Работает с сессиями. Создает уникальный идентификатор для сессии, по кот будут восстановлены данные
 *  этой сессии.
@@ -42,7 +42,7 @@ app.use(session({
     store: new MongoStore({mongooseConnection: mongoose.connection})
 })
 );
-
+var routes = require('./routes/index')(app);
 
 /*
 * Страница считает сколько раз была просмотрена тек. пользователем
